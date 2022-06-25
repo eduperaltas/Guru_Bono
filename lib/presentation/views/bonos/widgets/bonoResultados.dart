@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:guru_bono/presentation/widgets/texts/screentitle.dart';
 
 class BonoResultados extends StatelessWidget {
-  BonoResultados({Key? key}) : super(key: key);
-
+  BonoResultados({Key? key, required this.bonoName}) : super(key: key);
+  String bonoName;
   final TextStyle _txtStyle = const TextStyle(
     fontFamily: 'Poppins',
     fontSize: 15,

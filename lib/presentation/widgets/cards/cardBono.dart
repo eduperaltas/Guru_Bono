@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:guru_bono/core/framework/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:guru_bono/data/models/bono.dart';
+import 'package:guru_bono/presentation/views/bonos/widgets/bonoEdit.dart';
 import 'package:guru_bono/presentation/views/bonos/widgets/bonoResultados.dart';
-import 'package:guru_bono/presentation/views/bonos/widgets/estado.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class cardBono extends StatelessWidget {
-  cardBono({Key? key}) : super(key: key);
+  cardBono({Key? key, required this.bono}) : super(key: key);
 
+  final Bono bono;
   @override
   Widget build(BuildContext context) {
     Widget subData(String val1, String val2) {
@@ -48,9 +49,9 @@ class cardBono extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Buenaventura',
-                style: TextStyle(
+              Text(
+                bono.nombre,
+                style: const TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -59,29 +60,62 @@ class cardBono extends StatelessWidget {
               const SizedBox(
                 height: 5,
               ),
-              subData('Val nominal: 7000', 'Precio Compra: 6000'),
+              subData('Val nominal: ${bono.valNominal}',
+                  'Precio Compra: ${bono.valComercial}'),
               const SizedBox(
                 height: 1,
               ),
-              subData('Precio mercado: 7000', 'Val mercado: 6000'),
+              subData(
+                  'Precio mercado: ${bono.precMercado}', 'Val mercado: 6000'),
               const SizedBox(
                 height: 1,
               ),
-              subData('Inversión: 7000', ''),
+              subData('Inversión: ${bono.cantidad * bono.valComercial}',
+                  'Moneda: ${bono.moneda}'),
             ],
           ),
-          Container(
-            height: 70,
-            width: 70,
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: greenPrimary,
-                width: 1.5,
-              ),
-              borderRadius: BorderRadius.circular(10),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BonoEdit(bono: bono),
+                ),
+              );
+            },
+            child: Stack(
+              children: [
+                Positioned(
+                  top: -3,
+                  right: -1,
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: greenPrimary,
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: const Icon(
+                      Icons.edit,
+                      color: Colors.white,
+                      size: 13,
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 70,
+                  width: 70,
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: greenPrimary,
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Image.asset("assets/imgs/bono_iconNoBorder.png"),
+                ),
+              ],
             ),
-            child: Image.asset("assets/imgs/bono_iconNoBorder.png"),
           )
         ],
       );
@@ -136,7 +170,7 @@ class cardBono extends StatelessWidget {
                   color: Colors.black,
                 ),
                 'Cantidad:',
-                '18',
+                '${bono.cantidad}',
               ),
               const SizedBox(width: 10),
               section(
@@ -199,13 +233,7 @@ class cardBono extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 GestureDetector(
-                  onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return estadoDialog();
-                        });
-                  },
+                  onTap: () {},
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -229,7 +257,9 @@ class cardBono extends StatelessWidget {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return BonoResultados();
+                          return BonoResultados(
+                            bonoName: bono.nombre + bono.moneda,
+                          );
                         });
                   },
                   child: Row(

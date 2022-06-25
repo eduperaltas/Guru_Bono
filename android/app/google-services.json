@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "241140992355",
+    "project_id": "gurubono-2c90a",
+    "storage_bucket": "gurubono-2c90a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:241140992355:android:daa164965f3ac75d2a6b56",
+        "android_client_info": {
+          "package_name": "com.example.guru_bono"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "241140992355-8dj1kpdvv66s29fol4suur7nvj1rotel.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXLMKMufqyxXQtVmGZ7ksHHlvpUliCjFE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "241140992355-8dj1kpdvv66s29fol4suur7nvj1rotel.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

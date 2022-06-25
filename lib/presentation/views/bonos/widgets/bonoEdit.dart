@@ -1,7 +1,9 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:guru_bono/core/framework/colors.dart';
 import 'package:guru_bono/core/framework/globals.dart';
 import 'package:guru_bono/data/models/bono.dart';
 import 'package:guru_bono/data/service/bonoService.dart';
+import 'package:guru_bono/presentation/views/bonos/bonosScreen.dart';
 import 'package:guru_bono/presentation/widgets/forms/textForm.dart';
 import 'package:guru_bono/presentation/widgets/imgsContainers/circlularimg.dart';
 import 'package:guru_bono/presentation/widgets/screenBase.dart';
@@ -10,14 +12,15 @@ import 'package:guru_bono/presentation/widgets/texts/screentitle.dart';
 import 'package:dropdown_button2/custom_dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
-class BonoNuevo extends StatefulWidget {
-  BonoNuevo({Key? key}) : super(key: key);
+class BonoEdit extends StatefulWidget {
+  BonoEdit({Key? key, required this.bono}) : super(key: key);
+  final Bono bono;
 
   @override
-  State<BonoNuevo> createState() => _BonoNuevoState();
+  State<BonoEdit> createState() => _BonoEditState();
 }
 
-class _BonoNuevoState extends State<BonoNuevo> {
+class _BonoEditState extends State<BonoEdit> {
   final TextStyle _txtStyle = const TextStyle(
     fontFamily: 'Poppins',
     fontSize: 15,
@@ -57,6 +60,7 @@ class _BonoNuevoState extends State<BonoNuevo> {
   final List<String> diasxAno = ["360", "365"];
   final List<String> tipTasa = ["Efectiva", "Nominal"];
   final List<String> sujetoGasto = ["Emisor", "Bonista", "Ambos"];
+
   final List<String> capitalizacion = [
     "Diaria",
     "Quincenal",
@@ -113,7 +117,7 @@ class _BonoNuevoState extends State<BonoNuevo> {
   Widget _body(BuildContext context) {
     return Column(
       children: [
-        const ScreenTitle(title: 'Nuevo Bono'),
+        const ScreenTitle(title: 'Editar Bono'),
         baseData(context),
         FormdelBono(context),
         const ScreenTitle(title: 'Costes/Gastos iniciales'),
@@ -131,66 +135,77 @@ class _BonoNuevoState extends State<BonoNuevo> {
       title: 'Nombre',
       controller: _nombreController,
       inputType: InputType.Default,
+      placeholder: widget.bono.nombre,
       form: true,
     );
     txtForm _txtFormCantidad = txtForm(
       title: 'Cantidad',
       controller: _cantidadController,
       inputType: InputType.Number,
+      placeholder: widget.bono.cantidad.toString(),
       form: true,
     );
     txtForm _txtFormPrecMerc = txtForm(
       title: 'Precio de mercado',
       controller: _precMercadoController,
       inputType: InputType.Number,
+      placeholder: widget.bono.precMercado.toString(),
       form: true,
     );
     txtForm _txtFormValNom = txtForm(
       title: 'Valor nominal',
       controller: _valNominalController,
       inputType: InputType.Number,
+      placeholder: widget.bono.valNominal.toString(),
       form: true,
     );
     txtForm _txtFormValCom = txtForm(
       title: 'Valor comercial',
       controller: _valComercialController,
       inputType: InputType.Number,
+      placeholder: widget.bono.valComercial.toString(),
       form: true,
     );
     txtForm _txtFromNdeAnos = txtForm(
       title: 'N° de años',
       controller: _numAnosController,
       inputType: InputType.Number,
+      placeholder: widget.bono.NdeAnos.toString(),
       form: true,
     );
     txtForm _txtFormDiasxAno = txtForm(
       title: 'Días por año',
       controller: _diasXAController,
       inputType: InputType.Number,
+      placeholder: widget.bono.diasXAno.toString(),
       form: true,
     );
     txtForm _txtFormTasainteres = txtForm(
       title: 'Tasa de interés',
       controller: _tasaInteresController,
       inputType: InputType.Number,
+      placeholder: widget.bono.tasaInteres.toString(),
       form: true,
     );
     txtForm _txtFormTasaAnualDsct = txtForm(
       title: 'Tasa anual de descuento',
       controller: _tasaAnualDsctoController,
       inputType: InputType.Number,
+      placeholder: widget.bono.tasaAnualDscto.toString(),
       form: true,
     );
     txtForm _txtFormImpRenta = txtForm(
       title: 'Impuesto a la renta',
       controller: _impRentaController,
       inputType: InputType.Number,
+      placeholder: widget.bono.impuestoRenta.toString(),
       form: true,
     );
     txtForm _txtFormFecEmi = txtForm(
       title: 'Fecha de emisión',
       controller: _fecEmisionController,
       inputType: InputType.Default,
+      placeholder: widget.bono.fecEmision.toString(),
       form: true,
     );
     return SizedBox(
@@ -233,8 +248,13 @@ class _BonoNuevoState extends State<BonoNuevo> {
                 SizedBox(
                     width: ScreenWH(context).width * 0.41,
                     child: _txtFromNdeAnos),
-                dropdownMenu(context, 'Frec. del cupón', frecCupon, null,
-                    ScreenWH(context).width * 0.41, "FrecCupon"),
+                dropdownMenu(
+                    context,
+                    'Frec. del cupón',
+                    frecCupon,
+                    widget.bono.frecCupon,
+                    ScreenWH(context).width * 0.41,
+                    "FrecCupon"),
               ],
             ),
             const SizedBox(height: 10),
@@ -242,10 +262,20 @@ class _BonoNuevoState extends State<BonoNuevo> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                dropdownMenu(context, 'Días x Año', diasxAno, null,
-                    ScreenWH(context).width * 0.41, "diasxAno"),
-                dropdownMenu(context, 'Tipo tasa de interes', tipTasa, null,
-                    ScreenWH(context).width * 0.41, "TipTasa"),
+                dropdownMenu(
+                    context,
+                    'Días x Año',
+                    diasxAno,
+                    widget.bono.diasXAno,
+                    ScreenWH(context).width * 0.41,
+                    "diasxAno"),
+                dropdownMenu(
+                    context,
+                    'Tipo tasa de interes',
+                    tipTasa,
+                    widget.bono.tipTasaInteres,
+                    ScreenWH(context).width * 0.41,
+                    "TipTasa"),
               ],
             ),
             const SizedBox(height: 10),
@@ -253,8 +283,13 @@ class _BonoNuevoState extends State<BonoNuevo> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                dropdownMenu(context, 'Capitalización', capitalizacion, null,
-                    ScreenWH(context).width * 0.41, "Capitalizacion"),
+                dropdownMenu(
+                    context,
+                    'Capitalización',
+                    capitalizacion,
+                    widget.bono.capitalizacion,
+                    ScreenWH(context).width * 0.41,
+                    "Capitalizacion"),
                 SizedBox(
                     width: ScreenWH(context).width * 0.41,
                     child: _txtFormTasainteres),
@@ -287,30 +322,35 @@ class _BonoNuevoState extends State<BonoNuevo> {
       title: '% Prima',
       controller: _primaController,
       inputType: InputType.Number,
+      placeholder: widget.bono.prima.toString(),
       form: true,
     );
     txtForm _txtFormEstructuracion = txtForm(
       title: '% Estructuración',
       controller: _estructuracionController,
       inputType: InputType.Number,
+      placeholder: widget.bono.estructuracion.toString(),
       form: true,
     );
     txtForm _txtFormColocacion = txtForm(
       title: '% Colocación',
       controller: _colocacionController,
       inputType: InputType.Number,
+      placeholder: widget.bono.colocacion.toString(),
       form: true,
     );
     txtForm _txtFormFlotacion = txtForm(
       title: '% Flotación',
       controller: _flotacionController,
       inputType: InputType.Number,
+      placeholder: widget.bono.flotacion.toString(),
       form: true,
     );
     txtForm _txtFormCAVALI = txtForm(
       title: '% CAVALI',
       controller: _cavaliController,
       inputType: InputType.Number,
+      placeholder: widget.bono.cavali.toString(),
       form: true,
     );
     return SizedBox(
@@ -379,23 +419,47 @@ class _BonoNuevoState extends State<BonoNuevo> {
     return ElevatedButton(
       onPressed: () {
         Bono bono = Bono(
-          nombre: _nombreController.text,
-          metCalculo: selectedValues["Metodo"] ?? "",
-          moneda: selectedValues["Moneda"] ?? "",
-          cantidad: int.parse(_cantidadController.text),
-          precMercado: double.parse(_precMercadoController.text),
-          valNominal: double.parse(_valNominalController.text),
-          valComercial: double.parse(_valComercialController.text),
-          NdeAnos: int.parse(_numAnosController.text),
-          frecCupon: selectedValues["FrecCupon"] ?? "",
-          diasXAno: selectedValues["diasxAno"] ?? "",
-          tipTasaInteres: selectedValues["TipTasa"] ?? "",
-          capitalizacion: selectedValues["Capitalizacion"] ?? "",
-          tasaInteres: double.parse(_tasaInteresController.text),
-          fecEmision: _fecEmisionController.text,
-          impuestoRenta: double.parse(_impRentaController.text),
-          tasaAnualDscto: double.parse(_tasaAnualDsctoController.text),
-          prima: double.parse(_primaController.text),
+          nombre: _nombreController.text == ""
+              ? widget.bono.nombre
+              : _nombreController.text,
+          metCalculo: selectedValues["Metodo"] ?? widget.bono.metCalculo,
+          moneda: selectedValues["Moneda"] ?? widget.bono.moneda,
+          cantidad: int.parse(_cantidadController.text == ""
+              ? widget.bono.cantidad.toString()
+              : _cantidadController.text),
+          precMercado: double.parse(_precMercadoController.text == ""
+              ? widget.bono.precMercado.toString()
+              : _precMercadoController.text),
+          valNominal: double.parse(_valNominalController.text == ""
+              ? widget.bono.valNominal.toString()
+              : _valNominalController.text),
+          valComercial: double.parse(_valComercialController.text == ""
+              ? widget.bono.valComercial.toString()
+              : _valComercialController.text),
+          NdeAnos: int.parse(_numAnosController.text == ""
+              ? widget.bono.NdeAnos.toString()
+              : _numAnosController.text),
+          frecCupon: selectedValues["FrecCupon"] ?? widget.bono.frecCupon,
+          diasXAno: selectedValues["diasxAno"] ?? widget.bono.diasXAno,
+          tipTasaInteres:
+              selectedValues["TipTasa"] ?? widget.bono.tipTasaInteres,
+          capitalizacion:
+              selectedValues["Capitalizacion"] ?? widget.bono.capitalizacion,
+          tasaInteres: double.parse(_tasaInteresController.text == ""
+              ? widget.bono.tasaInteres.toString()
+              : _tasaInteresController.text),
+          fecEmision: _fecEmisionController.text == ""
+              ? widget.bono.fecEmision
+              : _fecEmisionController.text,
+          impuestoRenta: double.parse(_impRentaController.text == ""
+              ? widget.bono.impuestoRenta.toString()
+              : _impRentaController.text),
+          tasaAnualDscto: double.parse(_tasaAnualDsctoController.text == ""
+              ? widget.bono.tasaAnualDscto.toString()
+              : _tasaAnualDsctoController.text),
+          prima: double.parse(_primaController.text == ""
+              ? widget.bono.prima.toString()
+              : _primaController.text),
           estructuracion:
               "${_estructuracionController.text}-${selectedValues["sujEst"] ?? ""}",
           colocacion:
@@ -404,7 +468,9 @@ class _BonoNuevoState extends State<BonoNuevo> {
               "${_flotacionController.text}-${selectedValues["sujFlo"] ?? ""}",
           cavali: "${_cavaliController.text}-${selectedValues["sujCav"] ?? ""}",
         );
-        bonoService().createBono(bono);
+        bonoService().updateBono(bono);
+        BlocProvider.of<NavigationBloc>(context)
+            .add(NavigationEvents.pedidosScreenClickedEvent);
       },
       style: ElevatedButton.styleFrom(
           primary: greenPrimary, padding: EdgeInsets.all(10)),
@@ -418,7 +484,7 @@ class _BonoNuevoState extends State<BonoNuevo> {
 
   Widget baseData(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -430,10 +496,15 @@ class _BonoNuevoState extends State<BonoNuevo> {
           ),
           Column(
             children: [
-              dropdownMenu(context, 'Metodo de cálculo', metodos, null,
-                  ScreenWH(context).width * 0.45, "Metodo"),
+              dropdownMenu(
+                  context,
+                  'Metodo de cálculo',
+                  metodos,
+                  widget.bono.metCalculo,
+                  ScreenWH(context).width * 0.45,
+                  "Metodo"),
               const SizedBox(height: 10),
-              dropdownMenu(context, 'Moneda', moneda, null,
+              dropdownMenu(context, 'Moneda', moneda, widget.bono.moneda,
                   ScreenWH(context).width * 0.45, "Moneda"),
             ],
           ),

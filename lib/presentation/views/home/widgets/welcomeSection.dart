@@ -1,12 +1,21 @@
 import 'package:guru_bono/core/framework/colors.dart';
 import 'package:guru_bono/core/framework/globals.dart';
 import 'package:flutter/material.dart';
+import 'package:guru_bono/data/models/user.dart';
+import 'package:guru_bono/data/service/userService.dart';
 import 'package:guru_bono/presentation/widgets/texts/screentitle.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:pie_chart/pie_chart.dart';
 
-class welcomeSection extends StatelessWidget {
+class welcomeSection extends StatefulWidget {
   welcomeSection({Key? key}) : super(key: key);
+
+  @override
+  State<welcomeSection> createState() => _welcomeSectionState();
+}
+
+late String user;
+
+class _welcomeSectionState extends State<welcomeSection> {
   Map<String, double> dataMap = {
     "USD": 523120,
     "PEN": 334561,
@@ -15,19 +24,31 @@ class welcomeSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ListView(
-        children: [
-          // WELCOME-SECTION
-          welcome(context, "Giovanni", "77667212", "av. de la Libertad, #903"),
-          valorizacion(context),
-          const SizedBox(height: 10.0),
-          stats(greenPrimary.withOpacity(0.7), "USD", 900, 3600, context),
-          const SizedBox(height: 10.0),
-          stats(greenSoft.withOpacity(0.7), "PEN", 900, 3600, context),
-          const SizedBox(height: 10.0),
-        ],
-      ),
-    );
+        child: FutureBuilder(
+      future: userService().getUser(""),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(
+              child: CircularProgressIndicator(
+            color: greenPrimary,
+          ));
+        } else {
+          User usuario = snapshot.data as User;
+          return ListView(
+            children: [
+              // WELCOME-SECTION
+              welcome(context, usuario.name, usuario.dni, usuario.direccion),
+              valorizacion(context),
+              const SizedBox(height: 10.0),
+              stats(greenPrimary.withOpacity(0.7), "USD", 900, 3600, context),
+              const SizedBox(height: 10.0),
+              stats(greenSoft.withOpacity(0.7), "PEN", 900, 3600, context),
+              const SizedBox(height: 10.0),
+            ],
+          );
+        }
+      },
+    ));
   }
 
   //PIE-CHART

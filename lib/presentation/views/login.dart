@@ -1,13 +1,30 @@
 import 'package:guru_bono/core/framework/colors.dart';
 import 'package:guru_bono/core/framework/globals.dart';
+import 'package:guru_bono/data/models/user.dart';
+import 'package:guru_bono/data/service/userService.dart';
 import 'package:guru_bono/presentation/views/initScreen.dart';
 import 'package:guru_bono/presentation/widgets/buttons/buttonLarge.dart';
 import 'package:guru_bono/presentation/widgets/forms/textForm.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  login(String user, String password, BuildContext context) async {
+    User us = await userService().getUser( user);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user', us.user);
+    print('email: ' + _emailController.text + ' password: ' + _passwordController.text);
+    print("${us.name} logeado");
+    if(us.password==password){
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => InitScreen()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,17 +75,12 @@ class Login extends StatelessWidget {
             ButtonLarge(
                 text: 'Iniciar sesión',
                 onPressed: () {
-                  print('email: ' +
-                      _emailController.text +
-                      ' password: ' +
-                      _passwordController.text);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => InitScreen()),
-                  );
+                  login(_emailController.text, _passwordController.text,context);
                 }),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+
+              },
               child: Container(
                 alignment: Alignment.center,
                 height: 40,
@@ -76,7 +88,7 @@ class Login extends StatelessWidget {
                 child: const Text('¿Olvidaste tu contraseña?',
                     style: TextStyle(
                         color: greenPrimary,
-                        fontSize: 12,
+                        fontSize: 16,
                         decoration: TextDecoration.none)),
               ),
             )

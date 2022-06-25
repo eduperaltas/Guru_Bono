@@ -1,3 +1,5 @@
+import 'package:guru_bono/data/models/bono.dart';
+import 'package:guru_bono/data/service/bonoService.dart';
 import 'package:guru_bono/presentation/views/bonos/widgets/bonoNuevo.dart';
 import 'package:guru_bono/presentation/widgets/cards/cardBono.dart';
 import 'package:guru_bono/presentation/widgets/forms/searchBar.dart';
@@ -10,9 +12,16 @@ import '../../../core/framework/globals.dart';
 import '../../widgets/forms/textForm.dart';
 import '../../widgets/texts/screentitle.dart';
 
-class BonosScreen extends StatelessWidget with NavigationStates {
+class BonosScreen extends StatefulWidget with NavigationStates {
   BonosScreen({Key? key}) : super(key: key);
+
+  @override
+  State<BonosScreen> createState() => _BonosScreenState();
+}
+
+class _BonosScreenState extends State<BonosScreen> {
   final TextEditingController _searchController = TextEditingController();
+
   TextEditingController searchBonosController = TextEditingController();
 
   @override
@@ -68,6 +77,21 @@ class BonosScreen extends StatelessWidget with NavigationStates {
           ));
     }
 
+    Widget nodata() {
+      return Center(
+        child: Column(
+          children: [
+            Image.asset(
+              'assets/imgs/sin_bonos.png',
+              width: 250,
+              height: 350,
+            ),
+            const Text('Aún no agregas un bono')
+          ],
+        ),
+      );
+    }
+
     Widget tab() {
       return Expanded(
         child: Padding(
@@ -99,47 +123,71 @@ class BonosScreen extends StatelessWidget with NavigationStates {
                       ],
                     ),
                     Expanded(
-                      child: TabBarView(children: [
-                        Column(
-                          children: [
-                            const SizedBox(height: 10),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Searchbar(
-                                  placeholder: "Buscar bono",
-                                  controller: searchBonosController),
-                            ),
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: 10,
-                                itemBuilder: (context, index) {
-                                  return cardBono();
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            const SizedBox(height: 10),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Searchbar(
-                                  placeholder: "Buscar bono",
-                                  controller: searchBonosController),
-                            ),
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: 10,
-                                itemBuilder: (context, index) {
-                                  return cardBono();
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ]),
-                    ),
+                      child: FutureBuilder(
+                          future: bonoService().getBonos(),
+                          builder: (context, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const Center(
+                                  child: CircularProgressIndicator(
+                                color: greenPrimary,
+                              ));
+                            } else {
+                              List<Bono> lstBonos = snapshot.data as List<Bono>;
+                              List<Bono> lstBonosUSD = lstBonos
+                                  .where((bono) => bono.moneda == "USD")
+                                  .toList();
+                              List<Bono> lstBonosPEN = lstBonos
+                                  .where((bono) => bono.moneda == "PEN")
+                                  .toList();
+                              return TabBarView(children: [
+                                lstBonosUSD.isNotEmpty
+                                    ? Column(
+                                        children: [
+                                          const SizedBox(height: 10),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Searchbar(
+                                                placeholder: "Buscar bono",
+                                                controller:
+                                                    searchBonosController),
+                                          ),
+                                          Expanded(
+                                              child: ListView.builder(
+                                            itemCount: lstBonosUSD.length,
+                                            itemBuilder: (context, index) {
+                                              return cardBono(
+                                                  bono: lstBonosUSD[index]);
+                                            },
+                                          )),
+                                        ],
+                                      )
+                                    : nodata(),
+                                lstBonosPEN.isNotEmpty
+                                    ? Column(
+                                        children: [
+                                          const SizedBox(height: 10),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Searchbar(
+                                                placeholder: "Buscar bono",
+                                                controller:
+                                                    searchBonosController),
+                                          ),
+                                          Expanded(
+                                              child: ListView.builder(
+                                            itemCount: lstBonosPEN.length,
+                                            itemBuilder: (context, index) {
+                                              return cardBono(
+                                                  bono: lstBonosPEN[index]);
+                                            },
+                                          )),
+                                        ],
+                                      )
+                                    : nodata(),
+                              ]);
+                            }
+                          }),
+                    )
                   ],
                 ),
               )),
@@ -159,15 +207,6 @@ class BonosScreen extends StatelessWidget with NavigationStates {
             ],
           ),
           tab()
-          // cardBono(),
-          // Expanded(
-          //   child: ListView.builder(
-          //       shrinkWrap: true,
-          //       itemCount: clientes.length,
-          //       itemBuilder: (BuildContext context, int index) {
-          //         return ContactCard(cliente: clientes[index]);
-          //       }),
-          // ),
         ],
       );
     }

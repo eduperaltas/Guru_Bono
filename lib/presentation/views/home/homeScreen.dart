@@ -1,12 +1,16 @@
-import 'package:guru_bono/core/framework/globals.dart';
 import 'package:guru_bono/presentation/views/home/widgets/welcomeSection.dart';
 import 'package:guru_bono/presentation/widgets/screenBase.dart';
 import 'package:guru_bono/presentation/widgets/sideBar/navigationBloc.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget with NavigationStates {
+class HomeScreen extends StatefulWidget with NavigationStates {
   const HomeScreen({Key? key}) : super(key: key);
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return ScreenBase(

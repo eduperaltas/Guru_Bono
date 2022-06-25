@@ -1,9 +1,20 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:guru_bono/presentation/views/initScreen.dart';
 import 'package:guru_bono/presentation/views/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+late String user;
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    user = prefs.getString('user')??"";
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -18,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: InitScreen(),
+      home: user!="" ? InitScreen() :Login(),
     );
   }
 }
