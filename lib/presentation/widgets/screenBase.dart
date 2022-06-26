@@ -4,7 +4,7 @@ import '../../core/framework/globals.dart';
 
 class ScreenBase extends StatelessWidget {
   final Widget body;
-  const ScreenBase({Key? key, required this.body}) : super(key: key);
+  const ScreenBase({Key key, this.body}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

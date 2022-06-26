@@ -4,7 +4,7 @@ import 'package:guru_bono/presentation/widgets/sideBar/navigationBloc.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget with NavigationStates {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();

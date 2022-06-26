@@ -1,29 +1,71 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:guru_bono/core/framework/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:guru_bono/data/models/bono.dart';
+import 'package:guru_bono/data/service/bonoService.dart';
+import 'package:guru_bono/presentation/views/bonos/widgets/bonoCalendario.dart';
 import 'package:guru_bono/presentation/views/bonos/widgets/bonoEdit.dart';
 import 'package:guru_bono/presentation/views/bonos/widgets/bonoResultados.dart';
+import 'package:intl/intl.dart';
 
 class cardBono extends StatelessWidget {
-  cardBono({Key? key, required this.bono}) : super(key: key);
+  cardBono({Key key, this.bono, this.totValMercado}) : super(key: key);
 
   final Bono bono;
+  final double totValMercado;
+
+  getResultado(BuildContext context) async {
+    ResultadoBono res =
+        await bonoService().getResultadoBono(bono.id ?? "") as ResultadoBono;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BonoResultados(
+          bonoResultado: res,
+          bono: bono,
+        ),
+      ),
+    );
+  }
+
+  orderListByDate(List<CalendarioPagos> list) {
+    list.sort((a, b) => DateFormat('dd-MM-yyyy')
+        .parse(a.fechaProg)
+        .compareTo(DateFormat('dd-MM-yyyy').parse(b.fechaProg)));
+    return list;
+  }
+
+  getCronograma(BuildContext context) async {
+    List<CalendarioPagos> lstPagos =
+        await bonoService().getCalendar(bono.id ?? "");
+    lstPagos = await orderListByDate(lstPagos);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BonoCalendario(
+          bono: bono,
+          calPagos: lstPagos,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    int cantidad = bono.cantidad;
+    double valNominal = bono.valNominal;
+    double precioCompra = bono.valComercial;
+    double inversion = cantidad * precioCompra;
+    double precioMercado = bono.precMercado;
+    double valMercado = cantidad * precioMercado;
+    double ganPer = valMercado - inversion;
+    double rentabilidad = ganPer / inversion;
+    double portafolio = valMercado / totValMercado;
     Widget subData(String val1, String val2) {
       return Row(
         children: [
-          Text(
-            val1,
-            style: const TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(width: 5),
           Container(
             decoration: BoxDecoration(
               color: txtgrey,
@@ -31,6 +73,15 @@ class cardBono extends StatelessWidget {
             ),
             height: 4,
             width: 4,
+          ),
+          const SizedBox(width: 5),
+          Text(
+            val1,
+            style: const TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const SizedBox(width: 5),
           Text(
@@ -60,18 +111,18 @@ class cardBono extends StatelessWidget {
               const SizedBox(
                 height: 5,
               ),
-              subData('Val nominal: ${bono.valNominal}',
-                  'Precio Compra: ${bono.valComercial}'),
+              subData('Val nominal: ${valNominal.toStringAsFixed(2)}', ''),
+              subData('Precio Compra: ${precioCompra.toStringAsFixed(2)}', ""),
+              const SizedBox(
+                height: 1,
+              ),
+              subData('Inversión: ${inversion.toStringAsFixed(2)}', ''),
               const SizedBox(
                 height: 1,
               ),
               subData(
-                  'Precio mercado: ${bono.precMercado}', 'Val mercado: 6000'),
-              const SizedBox(
-                height: 1,
-              ),
-              subData('Inversión: ${bono.cantidad * bono.valComercial}',
-                  'Moneda: ${bono.moneda}'),
+                  'Precio mercado: ${precioMercado.toStringAsFixed(2)}', ""),
+              subData('Val mercado: ${valMercado.toStringAsFixed(2)}', ''),
             ],
           ),
           GestureDetector(
@@ -102,8 +153,8 @@ class cardBono extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  height: 70,
-                  width: 70,
+                  height: 100,
+                  width: 100,
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -179,7 +230,7 @@ class cardBono extends StatelessWidget {
                   color: Colors.black,
                 ),
                 'Portafolio',
-                '20.00%',
+                '${(portafolio * 100).toStringAsFixed(2)}%',
               ),
             ],
           ),
@@ -195,7 +246,7 @@ class cardBono extends StatelessWidget {
                   color: Colors.black,
                 ),
                 ' Ganancia/Perdida:',
-                '18',
+                ganPer.toStringAsFixed(2),
               ),
               const SizedBox(width: 10),
               section(
@@ -204,7 +255,7 @@ class cardBono extends StatelessWidget {
                   color: Colors.black,
                 ),
                 'Rentabilidad',
-                '20.00%',
+                '${((rentabilidad) * 100).toStringAsFixed(2)}%',
               ),
             ],
           ),
@@ -233,7 +284,9 @@ class cardBono extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    getCronograma(context);
+                  },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -254,13 +307,7 @@ class cardBono extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return BonoResultados(
-                            bonoName: bono.nombre + bono.moneda,
-                          );
-                        });
+                    getResultado(context);
                   },
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,

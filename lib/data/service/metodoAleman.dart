@@ -3,9 +3,9 @@ import 'package:finance/finance.dart';
 import 'package:intl/intl.dart';
 import 'package:guru_bono/data/models/bono.dart';
 
-class metFrances {
+class metAleman {
   final Bono bono;
-  metFrances({this.bono});
+  metAleman({this.bono});
 
   frecCupon() {
     switch (bono.frecCupon) {
@@ -196,24 +196,18 @@ class metFrances {
         double bonoIndex = cbono * (1 + infSemestral);
         double cupon = -bonoIndex * res.tes;
 
-        var pago = Finance.pmt(
-            rate: res.tes,
-            nper: res.nTotalPeriodos - i + 1,
-            pv: bonoIndex,
-            fv: 0);
+        double amort = i <= res.nTotalPeriodos
+            ? (plazoGracia == 'T' || plazoGracia == 'P')
+                ? 0
+                : -bonoIndex / (res.nTotalPeriodos - i + 1)
+            : 0;
 
         double cuota = i <= res.nTotalPeriodos
             ? plazoGracia == 'T'
                 ? 0
                 : plazoGracia == 'P'
                     ? cupon
-                    : pago.toDouble()
-            : 0;
-
-        double amort = i <= res.nTotalPeriodos
-            ? (plazoGracia == 'T' || plazoGracia == 'P')
-                ? 0
-                : cuota - cupon
+                    : cupon + amort
             : 0;
 
         double prima =

@@ -1,14 +1,14 @@
 import 'package:guru_bono/core/framework/colors.dart';
 import 'package:guru_bono/core/framework/globals.dart';
+import 'package:guru_bono/data/models/bono.dart';
 import 'package:guru_bono/presentation/widgets/imgsContainers/circlularimg.dart';
-import 'package:guru_bono/presentation/widgets/screenBase.dart';
-import 'package:guru_bono/presentation/widgets/sideBar/navigationBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:guru_bono/presentation/widgets/texts/screentitle.dart';
 
 class BonoResultados extends StatelessWidget {
-  BonoResultados({Key? key, required this.bonoName}) : super(key: key);
-  String bonoName;
+  BonoResultados({Key key, this.bonoResultado, this.bono}) : super(key: key);
+  ResultadoBono bonoResultado;
+  Bono bono;
   final TextStyle _txtStyle = const TextStyle(
     fontFamily: 'Poppins',
     fontSize: 15,
@@ -85,20 +85,27 @@ class BonoResultados extends StatelessWidget {
     );
   }
 
+  toPercentage(double num) {
+    return (num * 100).toStringAsFixed(3) + '%';
+  }
+
   Widget estructuracion() {
     return Container(
         margin: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(children: [
           titleBox('Estructuración del bono'),
-          valData("Frecuencia del cupón: 900"),
-          valData("Días capitalización: 30"),
-          valData("N° Periodos por año: 12"),
-          valData("N° Total de periodos: 120"),
-          valData("Tasa efectiva anual: 0.5%"),
-          valData("Tasa efectiva semestral: 10.5%"),
-          valData("COK Semestral: 2.5%"),
-          valData("Costes iniciales emisor: 0.5%"),
-          valData("Costes iniciales bonista: 0.5%"),
+          valData("Frecuencia del cupón: ${bonoResultado.frecCupon}"),
+          valData("Días capitalización: ${bonoResultado.diasCapita}"),
+          valData("N° Periodos por año: ${bonoResultado.nPeriodosxAno}"),
+          valData("N° Total de periodos: ${bonoResultado.nTotalPeriodos}"),
+          valData("Tasa efectiva anual: ${toPercentage(bonoResultado.tea)}"),
+          valData(
+              "Tasa efectiva semestral: ${toPercentage(bonoResultado.tes)}"),
+          valData("COK Semestral: ${toPercentage(bonoResultado.cokSemestral)}"),
+          valData(
+              "Costes iniciales emisor: ${bonoResultado.costiniEmi.toStringAsFixed(2)}"),
+          valData(
+              "Costes iniciales bonista: ${bonoResultado.costiniBon.toStringAsFixed(2)}"),
         ]));
   }
 
@@ -107,8 +114,10 @@ class BonoResultados extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(children: [
           titleBox('Precio actual y utilidad'),
-          valData("Precio actual: 1.000.00"),
-          valData("Utilidad / Pérdida: 231.98"),
+          valData(
+              "Precio actual: ${bonoResultado.precActual.toStringAsFixed(2) ?? '-'}"),
+          valData(
+              "Utilidad / Pérdida: ${bonoResultado.utilidadPerdida.toStringAsFixed(2) ?? '-'}"),
         ]));
   }
 
@@ -117,10 +126,11 @@ class BonoResultados extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(children: [
           titleBox('Ratios de decisión'),
-          valData("Duración: 4.30"),
-          valData("Convexidad: 4.30"),
-          valData("Total: 4.30"),
-          valData("Duración modificada: 4.30"),
+          valData("Duración: ${bonoResultado.duracion.toStringAsFixed(2)}"),
+          valData("Convexidad: ${bonoResultado.convexidad.toStringAsFixed(2)}"),
+          valData("Total: ${bonoResultado.total.toStringAsFixed(2)}"),
+          valData(
+              "Duración modificada: ${bonoResultado.duracionMod.toStringAsFixed(2)}"),
         ]));
   }
 
@@ -129,9 +139,9 @@ class BonoResultados extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(children: [
           titleBox('Indicadores de rentabilidad'),
-          valData("TCEA Emisor: 6.1234% - 6.1234% "),
-          valData("TCEA Emisor c/Escudo: 6.1234% - 6.1234% "),
-          valData("TREA Bonista: 6.1234% - 6.1234% "),
+          valData("TCEA Emisor: ?% - ?% "),
+          valData("TCEA Emisor c/Escudo: ?% - ?% "),
+          valData("TREA Bonista: ?% - ?% "),
         ]));
   }
 
@@ -153,17 +163,23 @@ class BonoResultados extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text("Buenaventura",
-                  style: TextStyle(
+            children: [
+              Text(bono.nombre,
+                  style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 17,
                       fontWeight: FontWeight.w700)),
-              Text('id: ' + " 1"),
               SizedBox(
+                width: 250,
+                child: Text(
+                  'id: ${bono.id}',
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const SizedBox(
                 height: 3,
               ),
-              Text('RUC: ' + '2054654632'),
+              const Text('RUC: ' + '2054654632'),
             ],
           ),
         ],

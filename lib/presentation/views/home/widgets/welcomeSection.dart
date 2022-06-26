@@ -7,18 +7,16 @@ import 'package:guru_bono/presentation/widgets/texts/screentitle.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 class welcomeSection extends StatefulWidget {
-  welcomeSection({Key? key}) : super(key: key);
+  welcomeSection({Key key}) : super(key: key);
 
   @override
   State<welcomeSection> createState() => _welcomeSectionState();
 }
 
-late String user;
-
 class _welcomeSectionState extends State<welcomeSection> {
   Map<String, double> dataMap = {
-    "USD": 523120,
-    "PEN": 334561,
+    "USD": 0,
+    "PEN": 0,
   };
 
   @override
@@ -34,15 +32,19 @@ class _welcomeSectionState extends State<welcomeSection> {
           ));
         } else {
           User usuario = snapshot.data as User;
+          dataMap["USD"] = usuario.usdEfectivo + usuario.usdCustVal;
+          dataMap["PEN"] = usuario.penEfectivo + usuario.penCustVal;
           return ListView(
             children: [
               // WELCOME-SECTION
               welcome(context, usuario.name, usuario.dni, usuario.direccion),
               valorizacion(context),
               const SizedBox(height: 10.0),
-              stats(greenPrimary.withOpacity(0.7), "USD", 900, 3600, context),
+              stats(greenPrimary.withOpacity(0.7), "USD", usuario.usdEfectivo,
+                  usuario.usdCustVal, context),
               const SizedBox(height: 10.0),
-              stats(greenSoft.withOpacity(0.7), "PEN", 900, 3600, context),
+              stats(greenSoft.withOpacity(0.7), "PEN", usuario.penEfectivo,
+                  usuario.penCustVal, context),
               const SizedBox(height: 10.0),
             ],
           );
@@ -111,8 +113,8 @@ class _welcomeSectionState extends State<welcomeSection> {
     );
   }
 
-  Widget stats(Color colorbkground, String title, int efectivo, int custVal,
-      BuildContext context) {
+  Widget stats(Color colorbkground, String title, double efectivo,
+      double custVal, BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
       width: 130,
@@ -133,7 +135,7 @@ class _welcomeSectionState extends State<welcomeSection> {
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       decoration: TextDecoration.none)),
-              Text("Total: ${custVal + efectivo}",
+              Text("Total: ${(custVal + efectivo).toStringAsFixed(2)}",
                   style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 16,
@@ -143,8 +145,9 @@ class _welcomeSectionState extends State<welcomeSection> {
             ],
           ),
           const SizedBox(height: 5),
-          valorizacionData("Custodio Valores: $custVal"),
-          valorizacionData("Efectivo: $efectivo"),
+          valorizacionData("Custodio Valores: ${custVal.toStringAsFixed(2)}"),
+          const SizedBox(height: 5),
+          valorizacionData("Efectivo: ${efectivo.toStringAsFixed(2)}"),
         ],
       ),
     );

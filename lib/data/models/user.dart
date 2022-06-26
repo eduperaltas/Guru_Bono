@@ -1,10 +1,25 @@
-class User{
+class User {
   final String id;
   final String user;
   final String name;
   final String password;
   final String dni;
   final String direccion;
+  final double penCustVal;
+  final double usdCustVal;
+  final double penEfectivo;
+  final double usdEfectivo;
 
-  User({required this.id,required this.user, required this.name, required this.password, required this.dni, required this.direccion,});
+  User({
+    this.id,
+    this.user,
+    this.name,
+    this.password,
+    this.dni,
+    this.direccion,
+    this.penCustVal,
+    this.usdCustVal,
+    this.penEfectivo,
+    this.usdEfectivo,
+  });
 }

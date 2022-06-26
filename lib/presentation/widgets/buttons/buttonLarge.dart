@@ -8,8 +8,7 @@ class ButtonLarge extends StatelessWidget {
   final String text;
   final Function onPressed;
 
-  const ButtonLarge({Key? key, required this.text, required this.onPressed})
-      : super(key: key);
+  const ButtonLarge({Key key, this.text, this.onPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,6 @@
 class Bono {
-  String? id;
-  String? user;
+  String id;
+  String user;
   final String nombre;
   final String metCalculo;
   final String moneda;
@@ -26,27 +26,27 @@ class Bono {
   Bono(
       {this.id,
       this.user,
-      required this.nombre,
-      required this.metCalculo,
-      required this.moneda,
-      required this.cantidad,
-      required this.precMercado,
-      required this.valNominal,
-      required this.valComercial,
-      required this.NdeAnos,
-      required this.frecCupon,
-      required this.diasXAno,
-      required this.tipTasaInteres,
-      required this.capitalizacion,
-      required this.tasaInteres,
-      required this.fecEmision,
-      required this.impuestoRenta,
-      required this.tasaAnualDscto,
-      required this.prima,
-      required this.estructuracion,
-      required this.colocacion,
-      required this.flotacion,
-      required this.cavali});
+      this.nombre,
+      this.metCalculo,
+      this.moneda,
+      this.cantidad,
+      this.precMercado,
+      this.valNominal,
+      this.valComercial,
+      this.NdeAnos,
+      this.frecCupon,
+      this.diasXAno,
+      this.tipTasaInteres,
+      this.capitalizacion,
+      this.tasaInteres,
+      this.fecEmision,
+      this.impuestoRenta,
+      this.tasaAnualDscto,
+      this.prima,
+      this.estructuracion,
+      this.colocacion,
+      this.flotacion,
+      this.cavali});
 
   toJson() {
     return {
@@ -97,24 +97,24 @@ class ResultadoBono {
   final double treaBonista;
 
   ResultadoBono({
-    required this.frecCupon,
-    required this.diasCapita,
-    required this.nPeriodosxAno,
-    required this.nTotalPeriodos,
-    required this.tea,
-    required this.tes,
-    required this.cokSemestral,
-    required this.costiniEmi,
-    required this.costiniBon,
-    required this.precActual,
-    required this.utilidadPerdida,
-    required this.duracion,
-    required this.convexidad,
-    required this.total,
-    required this.duracionMod,
-    required this.tceaEmi,
-    required this.tceaEmiEscudo,
-    required this.treaBonista,
+    this.frecCupon,
+    this.diasCapita,
+    this.nPeriodosxAno,
+    this.nTotalPeriodos,
+    this.tea,
+    this.tes,
+    this.cokSemestral,
+    this.costiniEmi,
+    this.costiniBon,
+    this.precActual,
+    this.utilidadPerdida,
+    this.duracion,
+    this.convexidad,
+    this.total,
+    this.duracionMod,
+    this.tceaEmi,
+    this.tceaEmiEscudo,
+    this.treaBonista,
   });
 
   toJson() {
@@ -161,23 +161,23 @@ class CalendarioPagos {
   final double factorConvex;
 
   CalendarioPagos({
-    required this.fechaProg,
-    required this.infAnual,
-    required this.infSemestral,
-    required this.plazoGracia,
-    required this.Bono,
-    required this.BonoIndexado,
-    required this.cupon,
-    required this.cuota,
-    required this.amort,
-    required this.prima,
-    required this.escudo,
-    required this.flujoEmi,
-    required this.flujoEmiEsc,
-    required this.flujoBon,
-    required this.flujoAct,
-    required this.faXPlazo,
-    required this.factorConvex,
+    this.fechaProg,
+    this.infAnual,
+    this.infSemestral,
+    this.plazoGracia,
+    this.Bono,
+    this.BonoIndexado,
+    this.cupon,
+    this.cuota,
+    this.amort,
+    this.prima,
+    this.escudo,
+    this.flujoEmi,
+    this.flujoEmiEsc,
+    this.flujoBon,
+    this.flujoAct,
+    this.faXPlazo,
+    this.factorConvex,
   });
 
   ToJson() {

@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import '../../../core/framework/globals.dart';
 
 class CircularImg extends StatelessWidget {
-  const CircularImg({Key? key, this.pathImg = '', this.vHeight, this.vWidth})
+  const CircularImg({Key key, this.pathImg = '', this.vHeight, this.vWidth})
       : super(key: key);
   final String pathImg;
-  final double? vHeight;
-  final double? vWidth;
+  final double vHeight;
+  final double vWidth;
   @override
   Widget build(BuildContext context) {
     return Container(

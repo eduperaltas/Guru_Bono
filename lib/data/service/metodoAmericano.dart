@@ -3,9 +3,9 @@ import 'package:finance/finance.dart';
 import 'package:intl/intl.dart';
 import 'package:guru_bono/data/models/bono.dart';
 
-class metFrances {
+class metAmericano {
   final Bono bono;
-  metFrances({this.bono});
+  metAmericano({this.bono});
 
   frecCupon() {
     switch (bono.frecCupon) {
@@ -146,6 +146,25 @@ class metFrances {
     return duracion / (1 + cokSem);
   }
 
+  precioActual(List<CalendarioPagos> calend, double cokSem) {
+    List<double> nums = [];
+    for (int i = 1; i < calend.length; i++) {
+      nums.add(calend[i].flujoBon);
+    }
+    return Finance.npv(rate: cokSem, values: nums).toDouble();
+  }
+
+  utilidadPerdida(List<CalendarioPagos> calend, double cokSem) {
+    List<double> nums = [];
+    for (int i = 1; i < calend.length; i++) {
+      nums.add(calend[i].flujoBon);
+    }
+    print(
+        'first: ${calend[0].flujoBon} - ${Finance.npv(rate: cokSem, values: nums)}');
+    return calend[0].flujoBon +
+        Finance.npv(rate: cokSem, values: nums).toDouble();
+  }
+
   List<CalendarioPagos> generateCalendar(ResultadoBono res) {
     List<CalendarioPagos> calendario = [];
 
@@ -195,29 +214,18 @@ class metFrances {
                 : 0.00;
         double bonoIndex = cbono * (1 + infSemestral);
         double cupon = -bonoIndex * res.tes;
-
-        var pago = Finance.pmt(
-            rate: res.tes,
-            nper: res.nTotalPeriodos - i + 1,
-            pv: bonoIndex,
-            fv: 0);
-
+        double amort = i <= res.nTotalPeriodos
+            ? i <= res.nTotalPeriodos - 1
+                ? 0
+                : -bonoIndex
+            : 0;
         double cuota = i <= res.nTotalPeriodos
             ? plazoGracia == 'T'
                 ? 0
-                : plazoGracia == 'P'
-                    ? cupon
-                    : pago.toDouble()
+                : (cupon + amort)
             : 0;
-
-        double amort = i <= res.nTotalPeriodos
-            ? (plazoGracia == 'T' || plazoGracia == 'P')
-                ? 0
-                : cuota - cupon
-            : 0;
-
         double prima =
-            -(i == res.nTotalPeriodos ? bono.prima * bonoIndex : 0.00);
+            -(i == res.nTotalPeriodos ? bono.prima * bono.valNominal : 0.00);
         double escudo = -cupon * bono.impuestoRenta;
         double flujEmi = i <= res.nTotalPeriodos ? cuota + prima : 0;
         double flujEmiEscu = escudo + flujEmi;
@@ -252,8 +260,3 @@ class metFrances {
     return calendario;
   }
 }
-
-
-// void main(List<String> args) {
-  
-// }

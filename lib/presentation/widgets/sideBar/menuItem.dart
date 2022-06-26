@@ -6,8 +6,7 @@ class MenuItemWidget extends StatelessWidget {
   final String title;
   final dynamic onTap;
 
-  const MenuItemWidget(
-      {Key? key, required this.icon, required this.title, required this.onTap})
+  const MenuItemWidget({Key key, this.icon, this.title, this.onTap})
       : super(key: key);
 
   @override

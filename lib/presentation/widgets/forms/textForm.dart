@@ -2,21 +2,21 @@ import 'package:guru_bono/core/framework/colors.dart';
 import 'package:flutter/material.dart';
 
 class txtForm extends StatefulWidget {
-  final String? title;
+  final String title;
   final String placeholder;
   final InputType inputType;
   final TextEditingController controller;
-  final String? errorMessage;
-  final int? maxLength;
-  final Icon? prefixIcon;
-  final Icon? sufixIcon;
-  final bool? validation;
-  final bool? form;
+  final String errorMessage;
+  final int maxLength;
+  final Icon prefixIcon;
+  final Icon sufixIcon;
+  final bool validation;
+  final bool form;
   txtForm(
-      {Key? key,
+      {Key key,
       this.title,
-      required this.controller,
-      required this.inputType,
+      this.controller,
+      this.inputType,
       this.placeholder = '',
       this.errorMessage,
       this.maxLength,

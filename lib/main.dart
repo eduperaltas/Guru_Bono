@@ -5,20 +5,20 @@ import 'package:guru_bono/presentation/views/initScreen.dart';
 import 'package:guru_bono/presentation/views/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-late String user;
+String user;
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    user = prefs.getString('user')??"";
+    user = prefs.getString('user') ?? "";
     runApp(const MyApp());
   });
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({Key key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: user!="" ? InitScreen() :Login(),
+      home: user != "" ? InitScreen() : Login(),
     );
   }
 }

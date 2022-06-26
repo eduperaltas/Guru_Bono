@@ -120,6 +120,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.1.2"
+  finance:
+    dependency: "direct main"
+    description:
+      name: finance
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   firebase_core:
     dependency: "direct main"
     description:

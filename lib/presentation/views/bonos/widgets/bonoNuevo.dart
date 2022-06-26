@@ -11,7 +11,7 @@ import 'package:dropdown_button2/custom_dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
 class BonoNuevo extends StatefulWidget {
-  BonoNuevo({Key? key}) : super(key: key);
+  BonoNuevo({Key key}) : super(key: key);
 
   @override
   State<BonoNuevo> createState() => _BonoNuevoState();
@@ -68,7 +68,7 @@ class _BonoNuevoState extends State<BonoNuevo> {
     "Anual"
   ];
 
-  Map<String, String?> selectedValues = {
+  Map<String, String> selectedValues = {
     "Metodo": null,
     "Moneda": null,
     "FrecCupon": null,
@@ -170,19 +170,19 @@ class _BonoNuevoState extends State<BonoNuevo> {
       form: true,
     );
     txtForm _txtFormTasainteres = txtForm(
-      title: 'Tasa de interés',
+      title: 'Tasa de interés %',
       controller: _tasaInteresController,
       inputType: InputType.Number,
       form: true,
     );
     txtForm _txtFormTasaAnualDsct = txtForm(
-      title: 'Tasa anual de descuento',
+      title: 'Tasa anual de descuento %',
       controller: _tasaAnualDsctoController,
       inputType: InputType.Number,
       form: true,
     );
     txtForm _txtFormImpRenta = txtForm(
-      title: 'Impuesto a la renta',
+      title: 'Imp. a la renta %',
       controller: _impRentaController,
       inputType: InputType.Number,
       form: true,
@@ -391,20 +391,23 @@ class _BonoNuevoState extends State<BonoNuevo> {
           diasXAno: selectedValues["diasxAno"] ?? "",
           tipTasaInteres: selectedValues["TipTasa"] ?? "",
           capitalizacion: selectedValues["Capitalizacion"] ?? "",
-          tasaInteres: double.parse(_tasaInteresController.text),
+          tasaInteres: double.parse(_tasaInteresController.text) / 100,
           fecEmision: _fecEmisionController.text,
-          impuestoRenta: double.parse(_impRentaController.text),
-          tasaAnualDscto: double.parse(_tasaAnualDsctoController.text),
-          prima: double.parse(_primaController.text),
+          impuestoRenta: double.parse(_impRentaController.text) / 100,
+          tasaAnualDscto: double.parse(_tasaAnualDsctoController.text) / 100,
+          prima: double.parse(_primaController.text) / 100,
           estructuracion:
-              "${_estructuracionController.text}-${selectedValues["sujEst"] ?? ""}",
+              "${double.parse(_estructuracionController.text) / 100}-${selectedValues["sujEst"] ?? ""}",
           colocacion:
-              "${_colocacionController.text}-${selectedValues["sujCol"] ?? ""}",
+              "${double.parse(_colocacionController.text) / 100}-${selectedValues["sujCol"] ?? ""}",
           flotacion:
-              "${_flotacionController.text}-${selectedValues["sujFlo"] ?? ""}",
-          cavali: "${_cavaliController.text}-${selectedValues["sujCav"] ?? ""}",
+              "${double.parse(_flotacionController.text) / 100}-${selectedValues["sujFlo"] ?? ""}",
+          cavali:
+              "${double.parse(_cavaliController.text) / 100}-${selectedValues["sujCav"] ?? ""}",
         );
-        bonoService().createBono(bono);
+        bonoService()
+            .createBono(bono)
+            .whenComplete(() => Navigator.pop(context));
       },
       style: ElevatedButton.styleFrom(
           primary: greenPrimary, padding: EdgeInsets.all(10)),
@@ -443,7 +446,7 @@ class _BonoNuevoState extends State<BonoNuevo> {
   }
 
   Widget dropdownMenu(BuildContext context, String title, List<String> items,
-      String? placeholder, double menuWidth, String valName) {
+      String placeholder, double menuWidth, String valName) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

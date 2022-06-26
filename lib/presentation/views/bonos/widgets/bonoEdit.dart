@@ -13,7 +13,7 @@ import 'package:dropdown_button2/custom_dropdown_button2.dart';
 import 'package:flutter/material.dart';
 
 class BonoEdit extends StatefulWidget {
-  BonoEdit({Key? key, required this.bono}) : super(key: key);
+  BonoEdit({Key key, this.bono}) : super(key: key);
   final Bono bono;
 
   @override
@@ -72,7 +72,7 @@ class _BonoEditState extends State<BonoEdit> {
     "Anual"
   ];
 
-  Map<String, String?> selectedValues = {
+  Map<String, String> selectedValues = {
     "Metodo": null,
     "Moneda": null,
     "FrecCupon": null,
@@ -181,24 +181,24 @@ class _BonoEditState extends State<BonoEdit> {
       form: true,
     );
     txtForm _txtFormTasainteres = txtForm(
-      title: 'Tasa de interés',
+      title: 'Tasa de interés %',
       controller: _tasaInteresController,
       inputType: InputType.Number,
-      placeholder: widget.bono.tasaInteres.toString(),
+      placeholder: (widget.bono.tasaInteres * 100).toStringAsFixed(2),
       form: true,
     );
     txtForm _txtFormTasaAnualDsct = txtForm(
-      title: 'Tasa anual de descuento',
+      title: 'Tasa anual de descuento %',
       controller: _tasaAnualDsctoController,
       inputType: InputType.Number,
-      placeholder: widget.bono.tasaAnualDscto.toString(),
+      placeholder: (widget.bono.tasaAnualDscto * 100).toStringAsFixed(2),
       form: true,
     );
     txtForm _txtFormImpRenta = txtForm(
-      title: 'Impuesto a la renta',
+      title: 'Imp. a la renta %',
       controller: _impRentaController,
       inputType: InputType.Number,
-      placeholder: widget.bono.impuestoRenta.toString(),
+      placeholder: (widget.bono.impuestoRenta * 100).toStringAsFixed(2),
       form: true,
     );
     txtForm _txtFormFecEmi = txtForm(
@@ -322,35 +322,40 @@ class _BonoEditState extends State<BonoEdit> {
       title: '% Prima',
       controller: _primaController,
       inputType: InputType.Number,
-      placeholder: widget.bono.prima.toString(),
+      placeholder: (widget.bono.prima * 100).toStringAsFixed(2),
       form: true,
     );
     txtForm _txtFormEstructuracion = txtForm(
       title: '% Estructuración',
       controller: _estructuracionController,
       inputType: InputType.Number,
-      placeholder: widget.bono.estructuracion.toString(),
+      placeholder:
+          (double.parse(widget.bono.estructuracion.split('-')[0]) * 100)
+              .toStringAsFixed(2),
       form: true,
     );
     txtForm _txtFormColocacion = txtForm(
       title: '% Colocación',
       controller: _colocacionController,
       inputType: InputType.Number,
-      placeholder: widget.bono.colocacion.toString(),
+      placeholder: (double.parse(widget.bono.colocacion.split('-')[0]) * 100)
+          .toStringAsFixed(2),
       form: true,
     );
     txtForm _txtFormFlotacion = txtForm(
       title: '% Flotación',
       controller: _flotacionController,
       inputType: InputType.Number,
-      placeholder: widget.bono.flotacion.toString(),
+      placeholder: (double.parse(widget.bono.flotacion.split('-')[0]) * 100)
+          .toStringAsFixed(2),
       form: true,
     );
     txtForm _txtFormCAVALI = txtForm(
       title: '% CAVALI',
       controller: _cavaliController,
       inputType: InputType.Number,
-      placeholder: widget.bono.cavali.toString(),
+      placeholder: (double.parse(widget.bono.cavali.split('-')[0]) * 100)
+          .toStringAsFixed(2),
       form: true,
     );
     return SizedBox(
@@ -368,8 +373,13 @@ class _BonoEditState extends State<BonoEdit> {
                 SizedBox(
                     width: ScreenWH(context).width * 0.41,
                     child: _txtFormEstructuracion),
-                dropdownMenu(context, 'Sujeto', sujetoGasto, null,
-                    ScreenWH(context).width * 0.41, "sujEst"),
+                dropdownMenu(
+                    context,
+                    'Sujeto',
+                    sujetoGasto,
+                    widget.bono.estructuracion.split('-')[1],
+                    ScreenWH(context).width * 0.41,
+                    "sujEst"),
               ],
             ),
             const SizedBox(height: 10),
@@ -380,8 +390,13 @@ class _BonoEditState extends State<BonoEdit> {
                 SizedBox(
                     width: ScreenWH(context).width * 0.41,
                     child: _txtFormColocacion),
-                dropdownMenu(context, 'Sujeto', sujetoGasto, null,
-                    ScreenWH(context).width * 0.41, "sujCol"),
+                dropdownMenu(
+                    context,
+                    'Sujeto',
+                    sujetoGasto,
+                    widget.bono.colocacion.split('-')[1],
+                    ScreenWH(context).width * 0.41,
+                    "sujCol"),
               ],
             ),
             const SizedBox(height: 10),
@@ -392,8 +407,13 @@ class _BonoEditState extends State<BonoEdit> {
                 SizedBox(
                     width: ScreenWH(context).width * 0.41,
                     child: _txtFormFlotacion),
-                dropdownMenu(context, 'Sujeto', sujetoGasto, null,
-                    ScreenWH(context).width * 0.41, "sujFlo"),
+                dropdownMenu(
+                    context,
+                    'Sujeto',
+                    sujetoGasto,
+                    widget.bono.flotacion.split('-')[1],
+                    ScreenWH(context).width * 0.41,
+                    "sujFlo"),
               ],
             ),
             const SizedBox(height: 10),
@@ -404,8 +424,13 @@ class _BonoEditState extends State<BonoEdit> {
                 SizedBox(
                     width: ScreenWH(context).width * 0.41,
                     child: _txtFormCAVALI),
-                dropdownMenu(context, 'Sujeto', sujetoGasto, null,
-                    ScreenWH(context).width * 0.41, "sujCav"),
+                dropdownMenu(
+                    context,
+                    'Sujeto',
+                    sujetoGasto,
+                    widget.bono.cavali.split('-')[1],
+                    ScreenWH(context).width * 0.41,
+                    "sujCav"),
               ],
             ),
             const SizedBox(height: 10),
@@ -419,6 +444,8 @@ class _BonoEditState extends State<BonoEdit> {
     return ElevatedButton(
       onPressed: () {
         Bono bono = Bono(
+          id: widget.bono.id,
+          user: widget.bono.user,
           nombre: _nombreController.text == ""
               ? widget.bono.nombre
               : _nombreController.text,
@@ -445,35 +472,36 @@ class _BonoEditState extends State<BonoEdit> {
               selectedValues["TipTasa"] ?? widget.bono.tipTasaInteres,
           capitalizacion:
               selectedValues["Capitalizacion"] ?? widget.bono.capitalizacion,
-          tasaInteres: double.parse(_tasaInteresController.text == ""
-              ? widget.bono.tasaInteres.toString()
-              : _tasaInteresController.text),
+          tasaInteres: _tasaInteresController.text == ""
+              ? widget.bono.tasaInteres
+              : double.parse(_tasaInteresController.text) / 100,
           fecEmision: _fecEmisionController.text == ""
               ? widget.bono.fecEmision
               : _fecEmisionController.text,
-          impuestoRenta: double.parse(_impRentaController.text == ""
-              ? widget.bono.impuestoRenta.toString()
-              : _impRentaController.text),
-          tasaAnualDscto: double.parse(_tasaAnualDsctoController.text == ""
-              ? widget.bono.tasaAnualDscto.toString()
-              : _tasaAnualDsctoController.text),
-          prima: double.parse(_primaController.text == ""
-              ? widget.bono.prima.toString()
-              : _primaController.text),
+          impuestoRenta: _impRentaController.text == ""
+              ? widget.bono.impuestoRenta
+              : double.parse(_impRentaController.text) / 100,
+          tasaAnualDscto: _tasaAnualDsctoController.text == ""
+              ? widget.bono.tasaAnualDscto
+              : double.parse(_tasaAnualDsctoController.text) / 100,
+          prima: _primaController.text == ""
+              ? widget.bono.prima
+              : double.parse(_primaController.text) / 100,
           estructuracion:
-              "${_estructuracionController.text}-${selectedValues["sujEst"] ?? ""}",
+              "${_estructuracionController.text == '' ? widget.bono.colocacion.split('-')[0] : _estructuracionController.text}-${selectedValues["sujEst"] ?? widget.bono.colocacion.split('-')[1]}",
           colocacion:
-              "${_colocacionController.text}-${selectedValues["sujCol"] ?? ""}",
+              "${_colocacionController.text == '' ? widget.bono.colocacion.split('-')[0] : _colocacionController.text}-${selectedValues["sujCol"] ?? widget.bono.colocacion.split('-')[1]}",
           flotacion:
-              "${_flotacionController.text}-${selectedValues["sujFlo"] ?? ""}",
-          cavali: "${_cavaliController.text}-${selectedValues["sujCav"] ?? ""}",
+              "${_flotacionController.text == '' ? widget.bono.flotacion.split('-')[0] : _flotacionController.text}-${selectedValues["sujFlo"] ?? widget.bono.flotacion.split('-')[1]}",
+          cavali:
+              "${_cavaliController.text == '' ? widget.bono.cavali.split('-')[0] : _cavaliController.text}-${selectedValues["sujCav"] ?? widget.bono.cavali.split('-')[1]}",
         );
-        bonoService().updateBono(bono);
-        BlocProvider.of<NavigationBloc>(context)
-            .add(NavigationEvents.pedidosScreenClickedEvent);
+        bonoService()
+            .updateBono(bono)
+            .whenComplete(() => Navigator.pop(context));
       },
       style: ElevatedButton.styleFrom(
-          primary: greenPrimary, padding: EdgeInsets.all(10)),
+          primary: greenPrimary, padding: const EdgeInsets.all(10)),
       child: const Text(
         'Guardar',
         style: TextStyle(
@@ -514,7 +542,7 @@ class _BonoEditState extends State<BonoEdit> {
   }
 
   Widget dropdownMenu(BuildContext context, String title, List<String> items,
-      String? placeholder, double menuWidth, String valName) {
+      String placeholder, double menuWidth, String valName) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

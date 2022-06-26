@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:guru_bono/data/models/bono.dart';
+import 'package:guru_bono/data/service/metodoAleman.dart';
+import 'package:guru_bono/data/service/metodoAmericano.dart';
 import 'package:guru_bono/data/service/metodoFrances.dart';
+import 'package:guru_bono/data/service/userService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -19,8 +22,13 @@ class bonoService {
     createResultBono(bono, id);
   }
 
-  void updateBono(Bono bono) {
+  Future<void> updateBono(Bono bono) async {
+    if (bono.user == null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      bono.user = prefs.getString('user') ?? "";
+    }
     _db.collection(BONOS).doc(bono.id).update(bono.toJson());
+    createResultBono(bono, bono.id ?? "");
   }
 
   Future<List<Bono>> getBonos() async {
@@ -58,32 +66,18 @@ class bonoService {
   //RESULTADO
   Future<void> createResultBono(Bono bono, String id) async {
     print('Creando resultado bono...');
-    int frecCupon =
-        bono.metCalculo == "Frances" ? metFrances(bono: bono).frecCupon() : 0;
-    int diasCapita =
-        bono.metCalculo == "Frances" ? metFrances(bono: bono).diasCapit() : 0;
-    int nPeriodosAno = bono.metCalculo == "Frances"
-        ? metFrances(bono: bono).nPeriodoxAno(frecCupon)
-        : 0;
-    int nTotalPeriodos = bono.metCalculo == "Frances"
-        ? metFrances(bono: bono).totalPeriodos(nPeriodosAno)
-        : 0;
-    double tea = bono.metCalculo == "Frances"
-        ? metFrances(bono: bono).tasaEfectivaAnual(diasCapita)
-        : 0.00;
-    double tes = bono.metCalculo == "Frances"
-        ? metFrances(bono: bono).tasaEfectivaSemestral(tea, frecCupon)
-        : 0.00;
-    double cokSem = bono.metCalculo == "Frances"
-        ? metFrances(bono: bono).COKsemestral(frecCupon)
-        : 0.00;
+    print("bonoID -> ${bono.id}");
 
-    double costIniEmi = bono.metCalculo == "Frances"
-        ? metFrances(bono: bono).costIniEmisor()
-        : 0.00;
-    double costIniBon = bono.metCalculo == "Frances"
-        ? metFrances(bono: bono).costIniBonista()
-        : 0.00;
+    int frecCupon = metAmericano(bono: bono).frecCupon();
+    int diasCapita = metAmericano(bono: bono).diasCapit();
+    int nPeriodosAno = metAmericano(bono: bono).nPeriodoxAno(frecCupon);
+    int nTotalPeriodos = metAmericano(bono: bono).totalPeriodos(nPeriodosAno);
+    double tea = metAmericano(bono: bono).tasaEfectivaAnual(diasCapita);
+    double tes = metAmericano(bono: bono).tasaEfectivaSemestral(tea, frecCupon);
+    double cokSem = metAmericano(bono: bono).COKsemestral(frecCupon);
+
+    double costIniEmi = metAmericano(bono: bono).costIniEmisor();
+    double costIniBon = metAmericano(bono: bono).costIniBonista();
 
     ResultadoBono res = ResultadoBono(
       frecCupon: frecCupon,
@@ -114,6 +108,7 @@ class bonoService {
         .set(res.toJson());
 
     createCalendar(bono, res, id);
+    userService().uptUserBalance();
   }
 
   Future<ResultadoBono> getResultadoBono(String bonoName) {
@@ -148,8 +143,11 @@ class bonoService {
   //Calendar
   Future<void> createCalendar(Bono bono, ResultadoBono res, String id) async {
     print('Creando calendario bono...');
-    List<CalendarioPagos> lstCalendar =
-        metFrances(bono: bono).generateCalendar(res);
+    List<CalendarioPagos> lstCalendar = bono.metCalculo == "Americano"
+        ? metAmericano(bono: bono).generateCalendar(res)
+        : bono.metCalculo == "Frances"
+            ? metFrances(bono: bono).generateCalendar(res)
+            : metAleman(bono: bono).generateCalendar(res);
     lstCalendar.forEach((element) {
       _db
           .collection(BONOS)
@@ -160,12 +158,17 @@ class bonoService {
     });
 
     //UPTADE RESULTADO
-    double duracion = metFrances(bono: bono).duracion(lstCalendar);
-    double convexidad = metFrances(bono: bono)
+    double duracion = metAmericano(bono: bono).duracion(lstCalendar);
+    double convexidad = metAmericano(bono: bono)
         .convexidad(lstCalendar, res.cokSemestral, res.frecCupon);
     double total = duracion + convexidad;
     double duracionMod =
-        metFrances(bono: bono).duracionModificada(duracion, res.cokSemestral);
+        metAmericano(bono: bono).duracionModificada(duracion, res.cokSemestral);
+
+    double precActual =
+        metAmericano(bono: bono).precioActual(lstCalendar, res.cokSemestral);
+    double utilidadPerdida =
+        metAmericano(bono: bono).utilidadPerdida(lstCalendar, res.cokSemestral);
 
     ResultadoBono resUPT = ResultadoBono(
       frecCupon: res.frecCupon,
@@ -177,8 +180,8 @@ class bonoService {
       cokSemestral: res.cokSemestral,
       costiniEmi: res.costiniEmi,
       costiniBon: res.costiniBon,
-      precActual: res.precActual,
-      utilidadPerdida: res.utilidadPerdida,
+      precActual: precActual,
+      utilidadPerdida: utilidadPerdida,
       duracion: duracion,
       convexidad: convexidad,
       total: total,
@@ -193,5 +196,29 @@ class bonoService {
         .collection('resultado')
         .doc('data')
         .update(resUPT.toJson());
+  }
+
+  Future<List<CalendarioPagos>> getCalendar(String id) async {
+    return _db.collection(BONOS).doc(id).collection('calendario').get().then(
+        (QuerySnapshot snp) => snp.docs
+            .map((DocumentSnapshot doc) => CalendarioPagos(
+                fechaProg: doc['fechaProg'],
+                infAnual: doc['infAnual'],
+                infSemestral: doc['infSemestral'],
+                plazoGracia: doc['plazoGracia'],
+                Bono: doc['Bono'],
+                BonoIndexado: doc['BonoIndexado'],
+                cupon: doc['cupon'],
+                cuota: doc['cuota'],
+                amort: doc['amort'],
+                prima: doc['prima'],
+                escudo: doc['escudo'],
+                flujoEmi: doc['flujoEmi'],
+                flujoEmiEsc: doc['flujoEmiEsc'],
+                flujoBon: doc['flujoBon'],
+                flujoAct: doc['flujoAct'],
+                faXPlazo: doc['faXPlazo'],
+                factorConvex: doc['factorConvex']))
+            .toList());
   }
 }

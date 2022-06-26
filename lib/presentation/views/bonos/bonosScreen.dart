@@ -13,7 +13,7 @@ import '../../widgets/forms/textForm.dart';
 import '../../widgets/texts/screentitle.dart';
 
 class BonosScreen extends StatefulWidget with NavigationStates {
-  BonosScreen({Key? key}) : super(key: key);
+  BonosScreen({Key key}) : super(key: key);
 
   @override
   State<BonosScreen> createState() => _BonosScreenState();
@@ -139,6 +139,18 @@ class _BonosScreenState extends State<BonosScreen> {
                               List<Bono> lstBonosPEN = lstBonos
                                   .where((bono) => bono.moneda == "PEN")
                                   .toList();
+                              //suma-Total-valMercado
+                              double sumaTotalvalMercadoUSD = 0;
+                              double sumaTotalvalMercadoPEN = 0;
+                              for (var bono in lstBonosUSD) {
+                                sumaTotalvalMercadoUSD +=
+                                    (bono.cantidad * bono.precMercado);
+                              }
+                              for (var bono in lstBonosPEN) {
+                                sumaTotalvalMercadoPEN +=
+                                    (bono.cantidad * bono.precMercado);
+                              }
+
                               return TabBarView(children: [
                                 lstBonosUSD.isNotEmpty
                                     ? Column(
@@ -156,7 +168,10 @@ class _BonosScreenState extends State<BonosScreen> {
                                             itemCount: lstBonosUSD.length,
                                             itemBuilder: (context, index) {
                                               return cardBono(
-                                                  bono: lstBonosUSD[index]);
+                                                bono: lstBonosUSD[index],
+                                                totValMercado:
+                                                    sumaTotalvalMercadoUSD,
+                                              );
                                             },
                                           )),
                                         ],
@@ -178,7 +193,10 @@ class _BonosScreenState extends State<BonosScreen> {
                                             itemCount: lstBonosPEN.length,
                                             itemBuilder: (context, index) {
                                               return cardBono(
-                                                  bono: lstBonosPEN[index]);
+                                                bono: lstBonosPEN[index],
+                                                totValMercado:
+                                                    sumaTotalvalMercadoPEN,
+                                              );
                                             },
                                           )),
                                         ],
