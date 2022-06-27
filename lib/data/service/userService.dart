@@ -32,6 +32,19 @@ class userService {
             usdEfectivo: double.parse(snp['efectivoUsd'])));
   }
 
+  Future<void> createUser(User user) async {
+    _db.collection(USERS).doc(user.user).set({
+      'nombre': user.name,
+      'password': user.password,
+      'dni': user.dni,
+      'direccion': user.direccion,
+      'custValPen': "0",
+      'custValUsd': "0",
+      'efectivoPen': "0",
+      'efectivoUsd': "0",
+    });
+  }
+
   Future<void> uptUserBalance() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String user = prefs.getString('user') ?? "";

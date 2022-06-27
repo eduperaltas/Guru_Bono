@@ -139,9 +139,10 @@ class BonoResultados extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(children: [
           titleBox('Indicadores de rentabilidad'),
-          valData("TCEA Emisor: ?% - ?% "),
-          valData("TCEA Emisor c/Escudo: ?% - ?% "),
-          valData("TREA Bonista: ?% - ?% "),
+          valData("TCEA Emisor: ${bonoResultado.tceaEmi}% - ?% "),
+          valData(
+              "TCEA Emisor c/Escudo: ${bonoResultado.tceaEmiEscudo}% - ?% "),
+          valData("TREA Bonista: ${bonoResultado.treaBonista}% - ?% "),
         ]));
   }
 

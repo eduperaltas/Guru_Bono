@@ -2,32 +2,33 @@ import 'package:guru_bono/core/framework/colors.dart';
 import 'package:guru_bono/core/framework/globals.dart';
 import 'package:guru_bono/data/models/user.dart';
 import 'package:guru_bono/data/service/userService.dart';
-import 'package:guru_bono/presentation/views/Register.dart';
 import 'package:guru_bono/presentation/views/initScreen.dart';
 import 'package:guru_bono/presentation/widgets/buttons/buttonLarge.dart';
 import 'package:guru_bono/presentation/widgets/forms/textForm.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Login extends StatelessWidget {
+class Register extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _dniController = TextEditingController();
+  final TextEditingController _direcController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
 
-  login(String user, String password, BuildContext context) async {
-    User us = await userService().getUser(user);
+  register(String user, String password, String name, String dni,
+      String direccion, BuildContext context) async {
+    await userService().createUser(User(
+        user: user,
+        name: name,
+        password: password,
+        dni: dni,
+        direccion: direccion));
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('user', us.user);
-    print('email: ' +
-        _emailController.text +
-        ' password: ' +
-        _passwordController.text);
-    print("${us.name} logeado");
-    if (us.password == password) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => InitScreen()),
-      );
-    }
+    await prefs.setString('user', user);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => InitScreen()),
+    );
   }
 
   @override
@@ -42,6 +43,21 @@ class Login extends StatelessWidget {
       title: 'Contraseña',
       controller: _passwordController,
       inputType: InputType.Password,
+    );
+    txtForm _txtFormNombre = txtForm(
+      title: 'Nombre',
+      controller: _nameController,
+      inputType: InputType.Default,
+    );
+    txtForm _txtFormDni = txtForm(
+      title: 'DNI',
+      controller: _dniController,
+      inputType: InputType.Default,
+    );
+    txtForm _txtFormDirec = txtForm(
+      title: 'Direccion',
+      controller: _direcController,
+      inputType: InputType.Default,
     );
 
     return Scaffold(
@@ -59,7 +75,7 @@ class Login extends StatelessWidget {
               alignment: Alignment.centerLeft,
               margin: const EdgeInsets.only(left: 30),
               child: const Text(
-                "Inicia sesión",
+                "Registrate",
                 style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 28,
@@ -76,24 +92,38 @@ class Login extends StatelessWidget {
                 margin:
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 child: _txtFormpasssword),
+            Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                child: _txtFormNombre),
+            Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                child: _txtFormDni),
+            Container(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                child: _txtFormDirec),
             ButtonLarge(
-                text: 'Iniciar sesión',
+                text: 'Registrarse',
                 onPressed: () {
-                  login(
-                      _emailController.text, _passwordController.text, context);
+                  register(
+                      _emailController.text,
+                      _passwordController.text,
+                      _nameController.text,
+                      _dniController.text,
+                      _direcController.text,
+                      context);
                 }),
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Register()),
-                );
+                Navigator.pop(context);
               },
               child: Container(
                 alignment: Alignment.center,
                 height: 40,
                 width: ScreenWH(context).width * 0.8,
-                child: const Text('Registrate',
+                child: const Text('Atras',
                     style: TextStyle(
                         color: greenPrimary,
                         fontSize: 16,

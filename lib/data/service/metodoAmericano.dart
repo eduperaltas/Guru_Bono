@@ -165,6 +165,36 @@ class metAmericano {
         Finance.npv(rate: cokSem, values: nums).toDouble();
   }
 
+  tceaEmisor(List<CalendarioPagos> calend, int frecCupon) {
+    List<double> nums = [];
+    for (int i = 0; i < calend.length; i++) {
+      nums.add(calend[i].flujoEmi);
+    }
+    return pow(Finance.irr(values: nums) + 1,
+            int.parse(bono.diasXAno) / frecCupon) -
+        1;
+  }
+
+  tceaEmisorEscudo(List<CalendarioPagos> calend, int frecCupon) {
+    List<double> nums = [];
+    for (int i = 0; i < calend.length; i++) {
+      nums.add(calend[i].flujoEmiEsc);
+    }
+    return pow(Finance.irr(values: nums) + 1,
+            int.parse(bono.diasXAno) / frecCupon) -
+        1;
+  }
+
+  tceaBonista(List<CalendarioPagos> calend, int frecCupon) {
+    List<double> nums = [];
+    for (int i = 0; i < calend.length; i++) {
+      nums.add(calend[i].flujoBon);
+    }
+    return pow(Finance.irr(values: nums) + 1,
+            int.parse(bono.diasXAno) / frecCupon) -
+        1;
+  }
+
   List<CalendarioPagos> generateCalendar(ResultadoBono res) {
     List<CalendarioPagos> calendario = [];
 

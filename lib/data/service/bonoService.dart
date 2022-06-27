@@ -169,6 +169,12 @@ class bonoService {
         metAmericano(bono: bono).precioActual(lstCalendar, res.cokSemestral);
     double utilidadPerdida =
         metAmericano(bono: bono).utilidadPerdida(lstCalendar, res.cokSemestral);
+    double tceaEmisor =
+        metAmericano(bono: bono).tceaEmisor(lstCalendar, res.frecCupon);
+    double tceaEmisorEscudo =
+        metAmericano(bono: bono).tceaEmisorEscudo(lstCalendar, res.frecCupon);
+    double tceaBonista =
+        metAmericano(bono: bono).tceaBonista(lstCalendar, res.frecCupon);
 
     ResultadoBono resUPT = ResultadoBono(
       frecCupon: res.frecCupon,
@@ -186,9 +192,9 @@ class bonoService {
       convexidad: convexidad,
       total: total,
       duracionMod: duracionMod,
-      tceaEmi: res.tceaEmi,
-      tceaEmiEscudo: res.tceaEmiEscudo,
-      treaBonista: res.treaBonista,
+      tceaEmi: tceaEmisor,
+      tceaEmiEscudo: tceaEmisorEscudo,
+      treaBonista: tceaBonista,
     );
     _db
         .collection(BONOS)

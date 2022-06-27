@@ -105,7 +105,7 @@ class _SideBarState extends State<SideBar>
                                   CircularImg(pathImg: 'assets/imgs/male.png'),
                             ),
                             const Text(
-                              'Victor Vicuña',
+                              'Eduardo Perez',
                               style: TextStyle(
                                   fontSize: 24,
                                   fontFamily: 'Poppins',
@@ -132,16 +132,16 @@ class _SideBarState extends State<SideBar>
                             .add(NavigationEvents.pedidosScreenClickedEvent);
                       },
                     ),
-                    dividerLine(),
-                    MenuItemWidget(
-                      icon: Icons.settings,
-                      title: "Configuración",
-                      onTap: () {
-                        onIconPressed();
-                        BlocProvider.of<NavigationBloc>(context)
-                            .add(NavigationEvents.pedidosScreenClickedEvent);
-                      },
-                    ),
+                    // dividerLine(),
+                    // MenuItemWidget(
+                    //   icon: Icons.settings,
+                    //   title: "Configuración",
+                    //   onTap: () {
+                    //     onIconPressed();
+                    //     BlocProvider.of<NavigationBloc>(context)
+                    //         .add(NavigationEvents.pedidosScreenClickedEvent);
+                    //   },
+                    // ),
                     Expanded(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,

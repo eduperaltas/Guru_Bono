@@ -132,66 +132,88 @@ class _BonoNuevoState extends State<BonoNuevo> {
       controller: _nombreController,
       inputType: InputType.Default,
       form: true,
+      validation: true,
+      errorMessage: 'El nombre es requerido',
     );
     txtForm _txtFormCantidad = txtForm(
       title: 'Cantidad',
       controller: _cantidadController,
       inputType: InputType.Number,
       form: true,
+      validation: true,
+      errorMessage: 'La cantidad es requerida',
     );
     txtForm _txtFormPrecMerc = txtForm(
       title: 'Precio de mercado',
       controller: _precMercadoController,
       inputType: InputType.Number,
       form: true,
+      validation: true,
+      errorMessage: 'El precio de mercado es requerido',
     );
     txtForm _txtFormValNom = txtForm(
       title: 'Valor nominal',
       controller: _valNominalController,
       inputType: InputType.Number,
       form: true,
+      validation: true,
+      errorMessage: 'El valor nominal es requerido',
     );
     txtForm _txtFormValCom = txtForm(
       title: 'Valor comercial',
       controller: _valComercialController,
       inputType: InputType.Number,
       form: true,
+      validation: true,
+      errorMessage: 'El valor comercial es requerido',
     );
     txtForm _txtFromNdeAnos = txtForm(
       title: 'N° de años',
       controller: _numAnosController,
       inputType: InputType.Number,
       form: true,
+      validation: true,
+      errorMessage: 'El n° de años es requerido',
     );
     txtForm _txtFormDiasxAno = txtForm(
       title: 'Días por año',
       controller: _diasXAController,
       inputType: InputType.Number,
       form: true,
+      validation: true,
+      errorMessage: 'El n° de días por año es requerido',
     );
     txtForm _txtFormTasainteres = txtForm(
       title: 'Tasa de interés %',
       controller: _tasaInteresController,
       inputType: InputType.Number,
       form: true,
+      validation: true,
+      errorMessage: 'La tasa de interés es requerida',
     );
     txtForm _txtFormTasaAnualDsct = txtForm(
       title: 'Tasa anual de descuento %',
       controller: _tasaAnualDsctoController,
       inputType: InputType.Number,
       form: true,
+      validation: true,
+      errorMessage: 'La tasa anual de descuento es requerida',
     );
     txtForm _txtFormImpRenta = txtForm(
       title: 'Imp. a la renta %',
       controller: _impRentaController,
       inputType: InputType.Number,
       form: true,
+      validation: true,
+      errorMessage: 'El imp. a la renta es requerido',
     );
     txtForm _txtFormFecEmi = txtForm(
       title: 'Fecha de emisión',
       controller: _fecEmisionController,
       inputType: InputType.Default,
       form: true,
+      validation: true,
+      errorMessage: 'La fecha de emisión es requerida',
     );
     return SizedBox(
       width: ScreenWH(context).width * 0.85,

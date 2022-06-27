@@ -54,7 +54,7 @@ class _txtFormState extends State<txtForm> {
         Material(
           color: Colors.transparent,
           child: widget.form ?? false
-              ? Container(
+              ? SizedBox(
                   height: 45,
                   child: TextField(
                     cursorColor: greenPrimary,
